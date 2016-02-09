@@ -16,10 +16,15 @@
 #include <stdio.h>
 #include <fcntl.h>
 #define BUFF_SIZE 2048
+#include <sys/types.h>
+#include <sys/stat.h>
 
 void	ft_putchar_fd(char c, int fd)
 {
-	write(fd, &c, 1);
+	ssize_t i;
+
+	i = write(fd, &c, 1);
+	i++;
 }
 
 void	ft_putnbr_fd(int n, int fd)
@@ -59,40 +64,6 @@ size_t	ft_strlen(const char *s)
 	while (s[i])
 		i++;
 	return (i);
-}
-
-void	ft_putchar(char c)
-{
-	write(1, &c, 1);
-}
-
-void	ft_putnbr(int n)
-{
-	char	v[10];
-	int		i;
-	long	nb;
-
-	i = 0;
-	nb = n;
-	if (nb < 0)
-	{
-		ft_putchar('-');
-		nb = -nb;
-	}
-	if (nb == 0)
-		ft_putchar('0');
-	while (nb > 0)
-	{
-		v[i] = nb % 10 + '0';
-		nb = nb / 10;
-		i++;
-	}
-	i--;
-	while (i >= 0)
-	{
-		ft_putchar(v[i]);
-		i--;
-	}
 }
 
 char	*ft_strjoin(char const *s1, char const *s2)
@@ -268,7 +239,7 @@ void	ft_roy_floyd(int **imap, int vertices)
 			k = 0;
 			while (k < vertices)
 			{
-				if (i != j && imap[i][k] && imap[k][j] && (imap[i][j] > imap[i][k] + imap[k][j] || imap[i][j] == 0))
+				if (i != j && imap[i][k] && imap[k][j] && (imap[i][j] > imap[i][k] + imap[k][j] || !imap[i][j]))
 					imap[i][j] = imap[i][k] + imap[k][j];
 				k++;
 			}
@@ -276,7 +247,6 @@ void	ft_roy_floyd(int **imap, int vertices)
 		}
 		i++;
 	}
-
 }
 
 static int		read_to_stock(int const fd, char **stock)
@@ -370,7 +340,6 @@ int				ft_get_next_line(int const fd, char **line)
 int		main()
 {
 	int		fd;
-	int		fd2;
 	char	*line;
 	int		vertices;
 	char 	**map;
@@ -392,20 +361,20 @@ int		main()
 	close(fd);
 	imap = ft_get_int_map(map, vertices);
 	ft_roy_floyd(imap, vertices);
-	fd2 = open("royfloyd.out", O_CREAT,O_RDWR);
+	fd = open("royfloyd.out", O_CREAT|O_RDWR|O_TRUNC, S_IRUSR|S_IWUSR);
 	i = 0;
 	while (i < vertices)
 	{
 		j = 0;
 		while (j < vertices)
 		{
-			ft_putnbr_fd(imap[i][j], fd2);
-			ft_putchar_fd(' ', fd2);
+			ft_putnbr_fd(imap[i][j], fd);
+			ft_putchar_fd(' ', fd);
 			j++;
 		}
-		ft_putchar_fd('\n', fd2);
+		ft_putchar_fd('\n', fd);
 		i++;
 	}
-	close(fd2);
+	close(fd);
 	return (0);
 }
