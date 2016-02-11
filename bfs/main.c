@@ -48,7 +48,35 @@ void	ft_recreate_que_with_adjacent_vertices_with_last_level_set(int *que, int **
 	}
 }
 
-void	ft_find_adjacent_vertices_with_no_level_set(int *que, int **imap, int **level, int **parent, int vertices, int lvl)
+int	ft_j_is_parent_of_start(int j, int start, int **parent)
+{
+	int i;
+
+	i = 0;
+	while (i < 9)
+	{
+		if (parent[start][i] == j)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+void	ft_add_start_as_parent_of_j(int j, int start, int **parent)
+{
+	int i;
+
+	i = 0;
+	while (i < 9)
+	{
+		if (parent[j][i] == 9)
+			parent[j][i] = start;
+		return ;
+		i++;
+	}
+}
+
+void	ft_find_adjacent_vertices(int *que, int **imap, int **level, int **parent, int vertices, int lvl)
 {
 	int start;
 	int j;
@@ -62,15 +90,13 @@ void	ft_find_adjacent_vertices_with_no_level_set(int *que, int **imap, int **lev
 		j = 0;
 		while (j < vertices)
 		{
-			if (imap[start][j] == 1 && level[j][0] == 9)
+			//if (imap[start][j] == 1 && level[j][0] >= lvl - 1 && !ft_j_is_parent_of_start(j, start, parent)) //level[j][0] == 9)
+			if (imap[start][j] == 1 && !ft_j_is_parent_of_start(j, start, parent)) //level[j][0] == 9)
 			{
-				k = 0;
-				while (k < vertices)
-				{
-					level[j][k] = lvl;
-					parent[j][k] = start;
-					k++;
-				}
+				if (level[j][0] == 9)
+					level[j][0] = lvl;
+				ft_add_start_as_parent_of_j(j, start, parent);
+				//	parent[j][0] = start;
 			}
 			j++;
 		}
@@ -208,7 +234,6 @@ int		main()
 	start = 0;
 	end = 4;
 	ft_set_level_0_to_start(start, level, vertices);
-	lvl = 1;
 	i = 0;
 	while (i < vertices)
 	{
@@ -216,10 +241,10 @@ int		main()
 		i++;
 	}
 	que[0] = 0;
-
+	lvl = 1;
 	while (que[0] != 9)
 	{
-		ft_find_adjacent_vertices_with_no_level_set(que, imap, level, parent, vertices, lvl);
+		ft_find_adjacent_vertices(que, imap, level, parent, vertices, lvl);
 		ft_recreate_que_with_adjacent_vertices_with_last_level_set(que, level, lvl);
 		lvl++;
 	}
