@@ -6,7 +6,7 @@
 /*   By: vdruta <vdruta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/10 16:19:54 by vdruta            #+#    #+#             */
-/*   Updated: 2016/02/16 16:47:11 by vdruta           ###   ########.fr       */
+/*   Updated: 2016/02/16 19:37:12 by vdruta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,28 +49,30 @@ void	ft_find_roads(int i, int **visited, int **imap)
 	int j;
 	int k;
 
-	j = 0;
-	visited[i][0] = 1;
-	while (j < 9)
-	{
-		if (imap[i][j] == 1 && visited[j][0] == 0)
+
+		j = 0;
+		visited[i][0] = 1;
+		while (j < 9)
 		{
-			if (j == 4)
+			if (imap[i][j] == 1 && visited[j][0] == 0)
 			{
-				k = 0;
-				while (k < 9)
+				if (j == 4)
 				{
-					if (visited[k][0])
-						ft_putnbr(k);
-					k++;
+					k = 0;
+					while (k < 9)
+					{
+						if (visited[k][0])
+							ft_putnbr(k);
+						k++;
+					}
+					ft_putendl("");
 				}
-				ft_putendl("");
+				//imap[i][j] = 0;
+				ft_find_roads(j, visited, imap);
 			}
-			ft_find_roads(j, visited, imap);
+			j++;
 		}
-		j++;
-	}
-	visited[i][0] = 0;
+		visited[i][0] = 0;
 }
 
 void	ft_recreate_que_with_adjacent_vertices_with_last_level_set(int *que, int **level, int lvl)
@@ -226,43 +228,43 @@ int		main()
 
 	start = 0;
 	end = 4;
-	
+
 	ft_find_roads(start, visited, imap);
-/*	ft_find_roads(i)
-	{
+	/*	ft_find_roads(i)
+		{
 		visited[i][0] = 1;
 
-	}
+		}
 
 
-	i = 0;
-	while (i < vertices)
-	{
+		i = 0;
+		while (i < vertices)
+		{
 		stack[i] = 9;
 		i++;
-	}
-	
-	vertices = 0;
-	stack[0] = start;
-	vertices++;
+		}
 
-	while (stack[0] != 9)
-	{
+		vertices = 0;
+		stack[0] = start;
+		vertices++;
+
+		while (stack[0] != 9)
+		{
 		s = ft_stack_pop(stack, &vertices);
 		ft_putnbr(s);
 		i = 0;
 		while (i < 9)
 		{
-			if (imap[s][i] == 1 && visited[i][0] == 9)
-			{
-				ft_stack_push(i, stack, &vertices);
-				ft_mark_visited(visited, i);
-			}
-			i++;
+		if (imap[s][i] == 1 && visited[i][0] == 9)
+		{
+		ft_stack_push(i, stack, &vertices);
+		ft_mark_visited(visited, i);
+		}
+		i++;
 		}
 
-	}
-*/
+		}
+		*/
 	//ft_print_int_matrix(visited, vertices);
 	//ft_print_int_matrix(parent, vertices);
 
