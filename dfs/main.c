@@ -6,7 +6,7 @@
 /*   By: vdruta <vdruta@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/02/10 16:19:54 by vdruta            #+#    #+#             */
-/*   Updated: 2016/02/16 19:37:12 by vdruta           ###   ########.fr       */
+/*   Updated: 2016/02/17 15:40:08 by vdruta           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	ft_set_level_0_to_start(int start, int **level, int vertices)
 	}
 }
 
-void	ft_find_roads(int i, int **visited, int **imap, int **parent, int vertices, int end, int start)
+void	ft_find_roads(int i, int **visited, int **imap, int **parent, int vertices, int end, int start, t_list **list)
 {
 	int j;
 	int k;
@@ -69,7 +69,7 @@ void	ft_find_roads(int i, int **visited, int **imap, int **parent, int vertices,
 				}
 				k = vertices - 2;
 				route[vertices - 1] = j;
-				e = j;
+				e = end;
 				while (e != start) 
 				{
 					route[k] = parent[e][0];
@@ -84,7 +84,6 @@ void	ft_find_roads(int i, int **visited, int **imap, int **parent, int vertices,
 					k++;
 				}
 				ft_putendl("");
-
 			}
 			ft_find_roads(j, visited, imap, parent, vertices, end, start);
 		}
@@ -243,11 +242,13 @@ int		main()
 	int lvl;
 	int stack[vertices];
 	int s;
+	t_list *list;
 
 	start = 0;
 	end = 9;
+	list = NULL;
 
-	ft_find_roads(start, visited, imap, parent, vertices, end, start);
+	ft_find_roads(start, visited, imap, parent, vertices, end, start, &list);
 	/*	ft_find_roads(i)
 		{
 		visited[i][0] = 1;
