@@ -44,35 +44,53 @@ void	ft_set_level_0_to_start(int start, int **level, int vertices)
 	}
 }
 
-void	ft_find_roads(int i, int **visited, int **imap)
+void	ft_find_roads(int i, int **visited, int **imap, int **parent, int vertices, int end, int start)
 {
 	int j;
 	int k;
+	int route[vertices];
+	int e;
 
-
-		j = 0;
-		visited[i][0] = 1;
-		while (j < 9)
+	j = 0;
+	visited[i][0] = 1;
+	while (j < vertices)
+	{
+		if (imap[i][j] == 1 && visited[j][0] == 0)
 		{
-			if (imap[i][j] == 1 && visited[j][0] == 0)
+			parent[j][0] = i;
+			if (j == end)
 			{
-				if (j == 4)
+				ft_putstr("parents:\n");
+				k = 0;
+				while (k < vertices)
 				{
-					k = 0;
-					while (k < 9)
-					{
-						if (visited[k][0])
-							ft_putnbr(k);
-						k++;
-					}
-					ft_putendl("");
+					route[k] = vertices;
+					k++;
 				}
-				//imap[i][j] = 0;
-				ft_find_roads(j, visited, imap);
+				k = vertices - 2;
+				route[vertices - 1] = j;
+				e = j;
+				while (e != start) 
+				{
+					route[k] = parent[e][0];
+					e = route[k];
+					k--;
+				}
+				k = 0;
+				while (k < vertices)
+				{
+					if (route[k] != vertices)
+						ft_putnbr(route[k]);
+					k++;
+				}
+				ft_putendl("");
+
 			}
-			j++;
+			ft_find_roads(j, visited, imap, parent, vertices, end, start);
 		}
-		visited[i][0] = 0;
+		j++;
+	}
+	visited[i][0] = 0;
 }
 
 void	ft_recreate_que_with_adjacent_vertices_with_last_level_set(int *que, int **level, int lvl)
@@ -135,7 +153,7 @@ int		main()
 	int		i;
 	int		j;
 
-	fd = open("in", O_RDONLY);
+	fd = open("in2", O_RDONLY);
 	ft_get_next_line(fd, &line);
 	vertices = ft_atoi(line);
 	map = (char**)malloc(sizeof(*map) * 13);
@@ -227,9 +245,9 @@ int		main()
 	int s;
 
 	start = 0;
-	end = 4;
+	end = 9;
 
-	ft_find_roads(start, visited, imap);
+	ft_find_roads(start, visited, imap, parent, vertices, end, start);
 	/*	ft_find_roads(i)
 		{
 		visited[i][0] = 1;
@@ -264,7 +282,7 @@ int		main()
 		}
 
 		}
-		*/
+	 */
 	//ft_print_int_matrix(visited, vertices);
 	//ft_print_int_matrix(parent, vertices);
 
